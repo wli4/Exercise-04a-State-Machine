@@ -109,7 +109,7 @@ func physics_process(_delta):
 		SM.set_state("Idle")
 ```
 
-Add a script to the Jumping node. Save it as res://Player/Moving.gd:
+Add a script to the Jumping node. Save it as res://Player/Jumping.gd:
 ```
 extends Node
 
@@ -153,12 +153,13 @@ func physics_process(_delta):
 		SM.set_state("Falling")
 	elif Input.is_action_pressed("left") or Input.is_action_pressed("right"):
 		player.set_animation("Moving")
-		var input_vector = Vector2(Input.get_action_strength("right") - Input.get_action_strength("left"),1.0)
+		var input_vector = Vector2(Input.get_action_strength("right") - Input.get_action_strength("left"),0)
 		player.set_direction(sign(input_vector.x))
 		player.velocity += player.move_speed * input_vector
 		player.move_and_slide(player.velocity, Vector2.UP)
 	else:
-		player.set_animation("Jumping")
+		player.velocity.x = 0
+		SM.set_state("Jumping")
 ```
 
 Finally, add a script to the Falling node. Save it as res://Player/Falling.gd:
@@ -177,11 +178,15 @@ func start():
 
 func physics_process(_delta):
 	if player.is_on_floor() and player.velocity.dot(Vector2.UP) < 0:
+		player.velocity.y = 0
 		SM.set_state("Idle")
+	if player.is_on_ceiling():
+		player.velocity.y = 0
 	var input_vector = Vector2(Input.get_action_strength("right") - Input.get_action_strength("left"),1.0)
 	player.set_direction(sign(input_vector.x))
 	player.velocity += player.move_speed * input_vector + player.gravity
 	player.move_and_slide(player.velocity, Vector2.UP)
+
 ```
 
 Test the project. You should be able to see the different states as the character moves, falls, or jumps (in the two different modes).
