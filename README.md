@@ -93,6 +93,7 @@ func _ready():
 
 func start():
 	player.set_animation("Moving")
+	player.jump_power = Vector2.ZERO
 
 func physics_process(_delta):
 	if not player.is_on_floor():
@@ -107,6 +108,7 @@ func physics_process(_delta):
 	else:
 		player.velocity = Vector2.ZERO
 		SM.set_state("Idle")
+
 ```
 
 Add a script to the Jumping node. Save it as res://Player/Jumping.gd:
